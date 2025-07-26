@@ -1,53 +1,65 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server";
 
-const faq: Record<string, string> = {
-  "servicios ofrece":
-    "🚀 INGELEAN ofrece desarrollo de software, automatización industrial, mantenimiento preventivo, hardware y soluciones en IA.",
-  ubicados: "📍 Estamos ubicados en Pereira, Risaralda - Colombia.",
-  "horario de atención": "🕒 Nuestro horario de atención es de lunes a viernes de 8:00 a.m. a 5:00 p.m.",
-  cotización:
-    "💼 Puedes solicitar una cotización escribiéndonos a contacto@ingelean.com o usando nuestro formulario web.",
-  automatización: "⚙️ Sí, tenemos experiencia en automatización industrial para empresas del Eje Cafetero.",
-  "soporte técnico": "🛠️ Ofrecemos soporte técnico tanto presencial como remoto para nuestros clientes.",
-  "ciudades trabajan": "🌎 Principalmente en el Eje Cafetero, pero también atendemos proyectos en todo el país.",
-  "soluciones de software": "💻 Desarrollamos soluciones a medida como ERP, CRM, sistemas de monitoreo, entre otros.",
-  ventas: "📞 Puedes comunicarte con ventas al correo ventas@ingelean.com o al WhatsApp 300 123 4567.",
-  "empresas pequeñas": "🏢 Sí, trabajamos con empresas de todos los tamaños, incluyendo startups y pymes.",
-  "inteligencia artificial": "🤖 Desarrollamos soluciones de IA personalizadas para optimizar procesos empresariales.",
-  mantenimiento: "🔧 Ofrecemos servicios de mantenimiento preventivo y correctivo para equipos industriales.",
-  precios:
-    "💰 Nuestros precios son competitivos y se ajustan al presupuesto de cada proyecto. ¡Solicita tu cotización!",
-  experiencia: "📈 Contamos con más de 5 años de experiencia en el sector tecnológico del Eje Cafetero.",
-}
+export async function POST(req: NextRequest) {
+  const { message } = await req.json();
 
-export async function POST(req: Request) {
+  if (!message || typeof message !== "string") {
+    return NextResponse.json({ response: "❌ Por favor, envía un mensaje válido." });
+  }
+
+  const prompt = {
+    contents: [
+      {
+        parts: [
+          {
+            text: `
+Eres un asistente virtual amable y profesional de INGELEAN S.A.S., una empresa ubicada en Pereira, Risaralda (Colombia).
+
+Información clave:
+- Servicios: desarrollo de software, automatización industrial, mantenimiento preventivo y correctivo, soluciones de hardware e inteligencia artificial.
+- Cobertura: Eje Cafetero y todo Colombia.
+- Horario: lunes a viernes de 8:00 a.m. a 5:00 p.m.
+- Contacto: contacto@ingelean.com | WhatsApp 300 123 4567.
+- Experiencia: más de 5 años con pymes, startups y empresas.
+
+Si el usuario saluda, respóndele con cortesía. Si hace preguntas técnicas fuera del contexto empresarial, sugiere hablar con un asesor humano.
+
+Consulta del usuario: "${message}"
+          `,
+          },
+        ],
+      },
+    ],
+  };
+
   try {
-    const { message } = await req.json()
+    const geminiRes = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-goog-api-key": process.env.GEMINI_API_KEY!,
+        },
+        body: JSON.stringify(prompt),
+      }
+    );
 
-    if (!message || typeof message !== "string") {
-      return NextResponse.json({
-        response: "❌ Por favor, envía un mensaje válido.",
-      })
-    }
+    const data = await geminiRes.json();
 
-    const lower = message.toLowerCase()
-    const key = Object.keys(faq).find((k) => lower.includes(k))
+    const response =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ??
+      "🤖 No tengo una respuesta clara en este momento. ¿Te gustaría que te contacte un asesor humano?";
 
-    const response = key
-      ? faq[key]
-      : "🤔 Lo siento, por ahora solo puedo responder preguntas frecuentes sobre nuestros servicios. ¿Te gustaría que te contacte un asesor humano? Puedes escribirnos a contacto@ingelean.com"
-
-    // Simulate a small delay for more realistic feel
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    return NextResponse.json({ response })
+    return NextResponse.json({ response });
   } catch (error) {
-    console.error("Error in chat API:", error)
+    console.error("❌ Error consultando Gemini 2.0 Flash:", error);
     return NextResponse.json(
       {
-        response: "❌ Lo siento, ocurrió un error interno. Por favor, intenta nuevamente.",
+        response:
+          "❌ Ocurrió un error al generar la respuesta. Por favor intenta nuevamente.",
       },
-      { status: 500 },
-    )
+      { status: 500 }
+    );
   }
 }
