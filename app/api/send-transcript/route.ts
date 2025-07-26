@@ -35,7 +35,7 @@ ${formattedMessages}
 
     const sendSmtpEmail = {
       to: [{ email }],
-      sender: { name: "INGELEAN Assistant", email: "no-reply@ingelean.com" },
+      sender: { name: "INGELEAN Assistant", email: "danielkategori@gmail.com" },
       subject: "📝 Transcripción de tu conversación con INGELEAN",
       htmlContent,
     }
