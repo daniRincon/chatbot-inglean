@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🤖 INGELEAN Assistant – Chatbot Inteligente
 
-## Getting Started
+**INGELEAN Assistant** es un chatbot web desarrollado para brindar atención automatizada a clientes de INGELEAN S.A.S., especializado en soluciones tecnológicas. Usa inteligencia artificial con Google Gemini para responder consultas en lenguaje natural, registra métricas en Supabase y permite enviar la conversación por correo electrónico.
 
-First, run the development server:
+---
 
-```bash
+## 🛠️ Tecnologías Utilizadas
+
+| Tecnología            | Descripción                                      |
+|-----------------------|--------------------------------------------------|
+| **Next.js 15**        | Framework web fullstack                          |
+| **Tailwind CSS**      | Estilos modernos y responsivos                   |
+| **Shadcn/ui**         | Componentes de UI accesibles y personalizables   |
+| **Supabase**          | Backend y base de datos en tiempo real           |
+| **Google Gemini API** | Procesamiento de lenguaje natural (NLP)          |
+| **Brevo (Sendinblue)**| Envío de correos con transcripción del chat      |
+| **Recharts**          | Visualización de métricas en el dashboard        |
+
+---
+
+## 📁 Estructura del Proyecto
+
+/chatbot-inglean
+├── app/
+│ ├── api/
+│ │ ├── chat/route.ts # Lógica del chatbot
+│ │ └── send-transcript/route.ts # Envío de transcripción por correo
+│ ├── dashboard/ # Página del dashboard analítico
+│ └── page.tsx # Página principal del chatbot
+├── components/
+│ ├── dashboard/ # Gráficas e indicadores
+│ ├── email-dialog.tsx # Modal para enviar correo
+│ ├── faq-panel.tsx # Panel de preguntas frecuentes
+│ └── ui/ # Componentes de interfaz
+├── lib/
+│ ├── analytics.ts # Funciones de métricas
+│ ├── supabase.ts # Configuración de Supabase
+├── scripts/
+│ └── create-tables.sql # Script de creación de tablas
+├── .env.local # Variables de entorno (no versionar)
+└── README.md # Documentación del proyecto
+
+yaml
+Copiar
+Editar
+
+---
+
+## 🔐 Variables de Entorno
+
+Asegúrate de crear un archivo `.env.local` con:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key
+SUPABASE_SERVICE_ROLE_KEY=tu_service_role
+BREVO_API_KEY=tu_api_key_de_brevo
+✨ Funcionalidades
+✅ Chatbot inteligente
+Procesamiento de lenguaje natural con Gemini.
+
+Identificación de preguntas frecuentes.
+
+Conversaciones únicas por sesión.
+
+📋 Panel de Preguntas Frecuentes
+14 preguntas predefinidas con categorías y filtros.
+
+Acceso rápido a preguntas comunes.
+
+Registro de interacciones con métricas.
+
+📬 Transcripción por Email
+Modal para ingresar nombre y correo.
+
+Envío de toda la conversación al email del usuario.
+
+Registro de éxito o error de envío.
+
+📊 Dashboard Analítico
+Sesiones totales, mensajes, duración promedio.
+
+Gráficos diarios de actividad, duración de sesiones y uso de FAQs.
+
+Calcula tasas de respuesta y tasa de envíos por correo.
+
+🗃️ Base de Datos en Supabase
+Tablas creadas (scripts/create-tables.sql):
+
+chat_sessions
+
+chat_messages
+
+faq_interactions
+
+email_transcripts
+
+Políticas RLS habilitadas para seguridad, con acceso total al service_role.
+
+🚀 Despliegue
+El proyecto está desplegado en Vercel, integrado con GitHub y con variables de entorno configuradas en el panel de control.
+
+Para desplegar:
+
+bash
+Copiar
+Editar
+npm run build
+Para desarrollo local:
+
+bash
+Copiar
+Editar
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🧪 Demostración Visual
+Chat en tiempo real con scroll automático
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Modal de envío por correo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Dashboard visual con gráficos e indicadores
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📈 Mejoras Futuras
+Soporte multilenguaje
 
-## Learn More
+Entrenamiento con embeddings propios
 
-To learn more about Next.js, take a look at the following resources:
+Panel de administración para editar preguntas frecuentes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Modo oscuro
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Conexión a WhatsApp o Telegram
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+📄 Licencia
+Desarrollado por INGELEAN S.A.S. – Todos los derechos reservados © 2024.
